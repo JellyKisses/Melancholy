@@ -6,8 +6,12 @@
 
 namespace me::core
 {
+
 	class Texture
 	{
+	public:
+		static std::map<std::string, std::string> TextureMap;
+
 	public:
 		Texture();
 		~Texture();
@@ -36,7 +40,7 @@ namespace me::core
 		void setMipmaps(const bool& mipmap);
 		const bool hasMipmaps();
 		void swap(Texture& texture);
-		const glm::uint32 getID(GLenum type = GL_TEXTURE0);
+		const glm::uint32 getID();
 		static glm::uint32 getMaximumSize();
 
 	private:

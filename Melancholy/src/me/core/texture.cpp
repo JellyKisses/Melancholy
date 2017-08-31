@@ -3,6 +3,8 @@
 
 namespace me::core
 {
+	std::map<std::string, std::string> Texture::TextureMap;
+
 	Texture::Texture()
 		:
 		m_Size(0, 0),
@@ -14,7 +16,11 @@ namespace me::core
 		m_FboAttached(false),
 		m_MipMap(false)
 	{
-
+		const std::string dir = "data/tex/";
+		TextureMap.insert(std::make_pair("Grass01", dir + "0_01.png"));
+		TextureMap.insert(std::make_pair("Grass02", dir + "0_02.png"));
+		TextureMap.insert(std::make_pair("Grass03", dir + "0_03.png"));
+		TextureMap.insert(std::make_pair("Grass04", dir + "0_04.png"));
 	}
 	Texture::~Texture()
 	{
@@ -60,14 +66,16 @@ namespace me::core
 		m_FboAttached = false;
 
 		if (!m_Texture) glGenTextures(1, &m_Texture);
-		glBindTexture(GL_TEXTURE_2D, m_Texture);
+		getID();
 		glTexImage2D(GL_TEXTURE_2D, 0, (m_SRGB ? GL_SRGB8_ALPHA8 : GL_RGBA), m_Size.x, m_Size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Repeated ? GL_REPEAT : GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_Repeated ? GL_REPEAT : GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_Smooth ? GL_LINEAR : GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_Smooth ? GL_LINEAR : GL_NEAREST);
 
+
 		m_MipMap = false;
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	const bool Texture::create(const glm::uint32& width, const glm::uint32& height)
 	{
@@ -100,13 +108,13 @@ namespace me::core
 			std::vector<glm::uint8> pixels(m_Size.x * m_Size.y * 4);
 			if (!m_Flipped)
 			{
-				glBindTexture(GL_TEXTURE_2D, m_Texture);
+				getID();
 				glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, &pixels[0]);
 			}
 			else
 			{
 				std::vector<glm::uint8> allPixels(m_Size.x * m_Size.y * 4);
-				glBindTexture(GL_TEXTURE_2D, m_Texture);
+				getID();
 				glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, &allPixels[0]);
 
 				const glm::uint8* src = &allPixels[0];
@@ -129,6 +137,7 @@ namespace me::core
 
 			Image image;
 			image.create(m_Size.x, m_Size.y, &pixels[0]);
+			glBindTexture(GL_TEXTURE_2D, 0);
 
 			return image;
 		}
@@ -141,12 +150,14 @@ namespace me::core
 	{
 		if (pixels && m_Texture)
 		{
-			glBindTexture(GL_TEXTURE_2D, m_Texture);
+			getID();
 			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, size.x, size.y, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_Smooth ? GL_LINEAR : GL_NEAREST);
 			m_MipMap = false;
 			m_Flipped = false;
 			glFlush();
+
+			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 	}
 	void Texture::update(const glm::uint8* pixels, const glm::uint32& width, const glm::uint32& height, const glm::uint32& x, const glm::uint32& y)
@@ -190,7 +201,7 @@ namespace me::core
 		{
 			m_Smooth = smooth;
 
-			glBindTexture(GL_TEXTURE_2D, m_Texture);
+			getID();
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_Smooth ? GL_LINEAR : GL_NEAREST);
 			
 			if (m_MipMap)
@@ -201,6 +212,8 @@ namespace me::core
 			{
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_Smooth ? GL_LINEAR : GL_NEAREST);
 			}
+
+			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 	}
 	const bool Texture::isSmooth()
@@ -223,9 +236,10 @@ namespace me::core
 
 			if (m_Texture)
 			{
-				glBindTexture(GL_TEXTURE_2D, m_Texture);
+				getID();
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Repeated ? GL_REPEAT : GL_CLAMP_TO_EDGE);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_Repeated ? GL_REPEAT : GL_CLAMP_TO_EDGE);
+				glBindTexture(GL_TEXTURE_2D, 0);
 			}
 		}
 	}
@@ -237,7 +251,7 @@ namespace me::core
 	{
 		if (m_Texture)
 		{
-			glBindTexture(GL_TEXTURE_2D, m_Texture);
+			getID();
 
 			if (mipmap)
 			{
@@ -252,6 +266,8 @@ namespace me::core
 
 				m_MipMap = false;
 			}
+
+			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 	}
 	const bool Texture::hasMipmaps()
@@ -269,9 +285,10 @@ namespace me::core
 		std::swap(m_FboAttached, texture.m_FboAttached);
 		std::swap(m_MipMap, texture.m_MipMap);
 	}
-	const glm::uint32 Texture::getID(GLenum id)
+	const glm::uint32 Texture::getID()
 	{
-		glBindTexture(id, m_Texture);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_Texture);
 		return m_Texture;
 	}
 	glm::uint32 Texture::getMaximumSize()

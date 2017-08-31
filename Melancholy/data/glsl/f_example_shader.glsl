@@ -2,9 +2,10 @@
 
 out vec4 FragColor;
 
-in vec3 IN_Position;
-in vec3 IN_Normal;
-in vec2 IN_TexCoord;
+flat in vec3 IN_Position;
+flat in vec3 IN_Normal;
+flat in vec2 IN_TexCoord;
+flat in vec3 IN_Color;
 
 
 //CAMERA
@@ -13,6 +14,5 @@ uniform sampler2D tex;
 
 void main()
 {
-	//FragColor = vec4(IN_TexCoord, 1.0, 1.0);
-	FragColor = texture(tex, IN_TexCoord);
+	FragColor = vec4(IN_Color, 1.0) * texture(tex, IN_TexCoord);
 }

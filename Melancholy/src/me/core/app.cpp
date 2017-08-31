@@ -196,6 +196,7 @@ namespace me::core
 		
 		glClearColor(0.5, 0.5, 0.5, 1.0);
 
+		glfwSwapInterval(1);
 		glfwSetKeyCallback(m_GlfwWindow, [](GLFWwindow* window, int key, int scancode, int action, int mode)
 		{
 			
@@ -216,16 +217,22 @@ namespace me::core
 	}
 	const bool App::run()
 	{
+		glm::float64 currentTime = glfwGetTime();
+		glm::float64 previousTime = currentTime;
+		glm::float64 delta = previousTime - currentTime;
+
 		while (!glfwWindowShouldClose(m_GlfwWindow))
 		{
+			currentTime = glfwGetTime();
+			delta = currentTime - previousTime;
+			previousTime = currentTime;
+
 			glfwPollEvents();
 
 			if (!getScene()->isLoaded()) getScene()->load();
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			//CHANGE THIS!
-			getScene(m_CurrentScene)->draw(1.);
-
+			getScene(m_CurrentScene)->draw(delta);
 
 			glfwSwapBuffers(m_GlfwWindow);
 		}

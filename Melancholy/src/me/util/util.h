@@ -46,10 +46,12 @@ static const std::string& FT_GetErrorString(FT_Error error)
 #include <fstream>
 #include <vector>
 #include <string>
+#include <chrono>
 #include <array>
 #include <map>
 
 
+namespace me::core { class Image; }
 namespace me::util
 {
 	static const std::string& to_lower(const std::string& str)
@@ -58,6 +60,7 @@ namespace me::util
 		std::transform(data.begin(), data.end(), data.begin(), tolower);
 		return data;
 	}
+	const core::Image perlin(const glm::float32 baseFreq, const glm::float32 persistence, const glm::int32 w, const glm::int32 h);
 
 	class Vertex
 	{

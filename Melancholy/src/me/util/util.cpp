@@ -1,8 +1,47 @@
 #include "util.h"
+#include "../core/image.h"
 
 
 namespace me::util
 {
+	const core::Image perlin(const glm::float32 baseFreq, const glm::float32 persistence, const glm::int32 w, const glm::int32 h)
+	{
+		glm::int32 width = w;
+		glm::int32 height = h;
+		core::Image  data;
+		data.create(w, h, glm::u8vec4(0, 0, 0, 255));
+		glm::float32 xFactor = 1.f / (width - 1);
+		glm::float32 yFactor = 1.f / (height - 1);
+
+		for (glm::int32 row = 0; row < height; ++row)
+		{
+			for (glm::int32 col = 0; col < width; ++col)
+			{
+				glm::float32 x = xFactor * col;
+				glm::float32 y = yFactor * row;
+				glm::float32 sum = 0.f;
+				glm::float32 freq = baseFreq;
+				glm::float32 persist = persistence;
+				for (glm::int32 oct = 0; oct < 4; ++oct)
+				{
+					glm::vec2 p(x * freq, y * freq);
+					glm::float32 val = glm::perlin(p) * persist;
+
+					sum += val;
+					
+					glm::float32 result = (sum + 1.f) / 2.f;
+					result = glm::clamp(result, 0.f, 1.f);
+					
+					data.setPixel(row, col, glm::u8vec4(result * 255, result * 255, result * 255, 255));
+					freq *= 2.f;
+					persist *= persistence;
+				}
+			}
+		}
+
+		return data;
+	}
+
 	Vertex::Vertex()
 		:
 		m_Position(0.f, 0.f, 0.f),

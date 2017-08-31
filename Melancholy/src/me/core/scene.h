@@ -57,10 +57,8 @@ namespace me::core
 	private:
 		std::map<std::string, Shader*> m_Shaders;
 		gfx::Terrain* m_Terrain;
-		gfx::Text* test_Text;
 		Texture* test_Texture;
-		gfx::Font* test_Font;
-		glm::float64_t m_Delta;
+		glm::float64 m_Delta;
 		Camera3D* m_Camera;
 		bool m_Loaded;
 
@@ -99,6 +97,6 @@ namespace me::core
 
 		const glm::float64_t getDelta();
 
-		void draw(const glm::float64_t &delta);
+		void draw(const glm::float64 &delta);
 	};
 }

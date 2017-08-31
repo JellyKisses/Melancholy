@@ -19,23 +19,19 @@ namespace me::core
 
 	const bool Scene::load()
 	{
+
 		if (!m_Loaded)
 		{	
 			m_Terrain = new gfx::Terrain();
 			
-			m_Camera = new Camera3D(0.f, 5.0f, 0.f, 0.f, 1.f, 0.f, 90.f, -45.f);
-			
-			test_Font = new gfx::Font();
-			test_Font->loadFromFile("data/fon/munro.ttf");
-
-			test_Text = new gfx::Text("Hello World!", *test_Font);
+			m_Camera = new Camera3D(0.f, 5.0f, 0.f, 0.f, 1.f, 0.f, 0.f, -45.f);
 
 			addShader(new Shader(), "example_shader");
 			getShader("example_shader")->loadFromFile("data/glsl/v_example_shader.glsl", Shader::Type::Vertex);
 			getShader("example_shader")->loadFromFile("data/glsl/f_example_shader.glsl", Shader::Type::Fragment);
 
 			test_Texture = new Texture();
-			test_Texture->loadFromFile("data/tex/test01.png");
+			test_Texture->loadFromFile(core::Texture::TextureMap["Grass01"]);
 
 			m_Loaded = true;
 		}
@@ -106,12 +102,12 @@ namespace me::core
 		return 0;
 	}
 
-	const glm::float64_t Scene::getDelta()
+	const glm::float64 Scene::getDelta()
 	{
 		return m_Delta;
 	}
 
-	void Scene::draw(const glm::float64_t& delta)
+	void Scene::draw(const glm::float64& delta)
 	{
 		m_Delta = delta;
 
@@ -119,16 +115,20 @@ namespace me::core
 		//getShader("example_shader")->addUniformF("model", glm::mat4());
 		getShader("example_shader")->addUniformF("view", glm::lookAt(m_Camera->getPosition(), m_Camera->getPosition() + m_Camera->getFront(), m_Camera->getUp()));
 		getShader("example_shader")->addUniformF("projection", glm::perspective(glm::radians(70.f), static_cast<glm::float32_t>(g_AppInstance->m_AppInfo.getResolution().x) / static_cast<glm::float32_t>(g_AppInstance->m_AppInfo.getResolution().y), 0.1f, 1024.f));
-		getShader("example_shader")->addUniformI("tex", test_Texture->getID(GL_TEXTURE0));
+		getShader("example_shader")->addUniformU("tex", test_Texture->getID());
 
 		if (glfwGetKey(g_AppInstance->m_GlfwWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		{
 			exit(0);
 		}
 
+		glm::float32 height = 0.f;
+		m_Terrain->getHeight(m_Camera->getPosition().x, m_Camera->getPosition().z, height);
+
+		m_Camera->m_Position.y = 10.f;
 		m_Camera->update(delta);
 		m_Terrain->draw(delta);
-		test_Text->draw();
+		//test_Text->draw();
 	}
 
 }

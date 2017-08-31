@@ -75,7 +75,7 @@ namespace me::core
 		glm::int32 width = 0;
 		glm::int32 height = 0;
 		glm::int32 channels = 0;
-		glm::uint8* ptr = SOIL_load_image(file.c_str(), &width, &height, &channels, SOIL_LOAD_AUTO);
+		glm::uint8* ptr = SOIL_load_image(file.c_str(), &width, &height, &channels, SOIL_LOAD_RGBA);
 
 
 		if (ptr)
@@ -108,11 +108,11 @@ namespace me::core
 			const glm::size_t dot = file.find_last_of('.');
 			const std::string extension = dot != std::string::npos ? util::to_lower(file.substr(dot + 1)) : "";
 
-			if (extension == "bmp") return SOIL_save_image(file.c_str(), SOIL_SAVE_TYPE_BMP, m_Size.x, m_Size.y, 4, m_Pixels.data());
-			if (extension == "tga") return SOIL_save_image(file.c_str(), SOIL_SAVE_TYPE_TGA, m_Size.x, m_Size.y, 4, m_Pixels.data());
-			if (extension == "png") return SOIL_save_image(file.c_str(), SOIL_SAVE_TYPE_PNG, m_Size.x, m_Size.y, 4, m_Pixels.data());
-			if (extension == "dds") return SOIL_save_image(file.c_str(), SOIL_SAVE_TYPE_DDS, m_Size.x, m_Size.y, 4, m_Pixels.data());
-			if (extension == "jpg" || extension == "jpeg") return SOIL_save_image_quality(file.c_str(), SOIL_SAVE_TYPE_BMP, m_Size.x, m_Size.y, 4, m_Pixels.data(), 99);
+			if (extension == "bmp") return SOIL_save_image(file.c_str(), SOIL_SAVE_TYPE_BMP, m_Size.x, m_Size.y, 4, &m_Pixels[0]);
+			if (extension == "tga") return SOIL_save_image(file.c_str(), SOIL_SAVE_TYPE_TGA, m_Size.x, m_Size.y, 4, &m_Pixels[0]);
+			if (extension == "png") return SOIL_save_image(file.c_str(), SOIL_SAVE_TYPE_PNG, m_Size.x, m_Size.y, 4, &m_Pixels[0]);
+			if (extension == "dds") return SOIL_save_image(file.c_str(), SOIL_SAVE_TYPE_DDS, m_Size.x, m_Size.y, 4, &m_Pixels[0]);
+			if (extension == "jpg" || extension == "jpeg") return SOIL_save_image_quality(file.c_str(), SOIL_SAVE_TYPE_JPG, m_Size.x, m_Size.y, 4, &m_Pixels[0], 99);
 		}
 		else
 		{
