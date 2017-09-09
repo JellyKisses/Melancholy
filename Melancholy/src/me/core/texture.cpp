@@ -30,7 +30,7 @@ namespace me::core
 		}
 	}
 
-	const bool Texture::create(const glm::uvec2& size)
+	bool Texture::create(const glm::uvec2& size)
 	{
 		const glm::uint32 maxSize = getMaximumSize();
 		if ((size.x == 0) || (size.y == 0) || (size.x > maxSize) || (size.y > maxSize))
@@ -77,16 +77,16 @@ namespace me::core
 		m_MipMap = false;
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-	const bool Texture::create(const glm::uint32& width, const glm::uint32& height)
+	bool Texture::create(const glm::uint32& width, const glm::uint32& height)
 	{
 		return create(glm::uvec2(width, height));
 	}
-	const bool Texture::loadFromFile(const std::string& file)
+	bool Texture::loadFromFile(const std::string& file)
 	{
 		Image image;
 		return image.loadFromFile(file) && loadFromImage(image);
 	}
-	const bool Texture::loadFromImage(const Image& image)
+	bool Texture::loadFromImage(const Image& image)
 	{
 		if (create(const_cast<Image&>(image).getSize()))
 		{
@@ -195,7 +195,7 @@ namespace me::core
 	{
 		update(image, glm::uvec2(0, 0));
 	}
-	void Texture::setSmooth(const bool& smooth)
+	void Texture::setSmooth(bool& smooth)
 	{
 		if (m_Smooth != smooth)
 		{
@@ -216,19 +216,19 @@ namespace me::core
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 	}
-	const bool Texture::isSmooth()
+	bool Texture::isSmooth()
 	{
 		return m_Smooth;
 	}
-	void Texture::setSRGB(const bool& srgb)
+	void Texture::setSRGB(bool& srgb)
 	{
 		m_SRGB = srgb;
 	}
-	const bool Texture::isSRGB()
+	bool Texture::isSRGB()
 	{
 		return m_SRGB;
 	}
-	void Texture::setRepeated(const bool& repeated)
+	void Texture::setRepeated(bool& repeated)
 	{
 		if (m_Repeated != repeated)
 		{
@@ -243,11 +243,11 @@ namespace me::core
 			}
 		}
 	}
-	const bool Texture::isRepeated()
+	bool Texture::isRepeated()
 	{
 		return m_Repeated;
 	}
-	void Texture::setMipmaps(const bool& mipmap)
+	void Texture::setMipmaps(bool& mipmap)
 	{
 		if (m_Texture)
 		{
@@ -270,7 +270,7 @@ namespace me::core
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 	}
-	const bool Texture::hasMipmaps()
+	bool Texture::hasMipmaps()
 	{
 		return m_MipMap;
 	}

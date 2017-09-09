@@ -30,9 +30,6 @@
     <ClCompile Include="src\me\util\util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\me\gfx\terrain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\me\core\camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -48,6 +45,9 @@
     <ClCompile Include="src\me\core\transformable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\me\gfx\world.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\me\core\shader.h">
@@ -60,9 +60,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\me\me.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\me\gfx\terrain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\me\util\util.h">
@@ -81,6 +78,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\me\core\transformable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\me\gfx\world.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

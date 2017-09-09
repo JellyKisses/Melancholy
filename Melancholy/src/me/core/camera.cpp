@@ -131,19 +131,19 @@ namespace me::core
 
 		if (glfwGetKey(g_AppInstance->m_GlfwWindow, GLFW_KEY_W) == GLFW_PRESS)
 		{
-			m_Velocity[0] += glm::vec3(vel_acc, 0.f, 0.f);
+			m_Velocity[0] += glm::vec3(0.f, 0.f, -vel_acc);
 		}
 		if (glfwGetKey(g_AppInstance->m_GlfwWindow, GLFW_KEY_A) == GLFW_PRESS)
 		{
-			m_Velocity[0] += glm::vec3(0.f, 0.f, -vel_acc);
+			m_Velocity[0] += glm::vec3(-vel_acc, 0.f, 0.f);
 		}
 		if (glfwGetKey(g_AppInstance->m_GlfwWindow, GLFW_KEY_S) == GLFW_PRESS)
 		{
-			m_Velocity[0] += glm::vec3(-vel_acc, 0.f, 0.f);
+			m_Velocity[0] += glm::vec3(0.f, 0.f, vel_acc);
 		}
 		if (glfwGetKey(g_AppInstance->m_GlfwWindow, GLFW_KEY_D) == GLFW_PRESS)
 		{
-			m_Velocity[0] += glm::vec3(0.f, 0.f, vel_acc);
+			m_Velocity[0] += glm::vec3(vel_acc, 0.f, 0.f);
 		}
 
 		/**/ if (m_Velocity[0].x > 0.f) m_Velocity[0].x -= vel_grv * delta;

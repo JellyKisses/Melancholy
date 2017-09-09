@@ -59,7 +59,7 @@ namespace me::gfx
 			Font();
 			~Font();
 
-			const bool loadFromFile(const std::string& file);
+			bool loadFromFile(const std::string& file);
 
 			Glyph* getGlyph(const char* codePoint);
 			Glyph* loadGlyph(const char* codePoint);

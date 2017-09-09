@@ -66,8 +66,8 @@ namespace me::util
 	{
 	public:
 		Vertex();
-		Vertex(const glm::vec3& position, const glm::vec2& texCoord, const glm::vec3& normal);
-		Vertex(const glm::float32& px, const glm::float32& py, const glm::float32& pz, const glm::float32& tx, const glm::float32& ty, const glm::float32& nx, const glm::float32& ny, const glm::float32& nz);
+		Vertex(const glm::vec3& position, const glm::vec2& texCoord, const glm::vec3& normal = glm::vec3(0, 0, 0));
+		Vertex(const glm::float32& px, const glm::float32& py, const glm::float32& pz, const glm::float32& tx, const glm::float32& ty, const glm::float32& nx = 0.f, const glm::float32& ny = 0.f, const glm::float32& nz = 0.f);
 		~Vertex();
 	
 	public:

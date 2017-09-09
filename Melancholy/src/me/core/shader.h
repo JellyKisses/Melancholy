@@ -29,8 +29,8 @@ namespace me::core
 		Shader();
 		~Shader();
 
-		const bool loadFromFile(std::string file, Type type);
-		const bool loadFromMemory(std::string code, Type type);
+		bool loadFromFile(std::string file, Type type);
+		bool loadFromMemory(std::string code, Type type);
 
 		void addUniformI(const std::string& name, glm::int32 x);
 		void addUniformU(const std::string& name, glm::uint32 x);
@@ -55,7 +55,7 @@ namespace me::core
 
 	private:
 		std::string read(std::string file);
-		const bool create();
+		bool create();
 
 	};
 }

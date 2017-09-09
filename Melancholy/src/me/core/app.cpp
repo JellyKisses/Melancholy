@@ -9,7 +9,7 @@ namespace me::core
 	{
 
 	}
-	AppInfo::AppInfo(const glm::uint32& ww, const glm::uint32& wh, const glm::uint32& fw, const glm::uint32& fh, const bool& fullscreen, const bool& vsync) : ww(ww), wh(wh), fw(fw), fh(fh), full(fullscreen), vsync(vsync)
+	AppInfo::AppInfo(const glm::uint32& ww, const glm::uint32& wh, const glm::uint32& fw, const glm::uint32& fh, bool& fullscreen, bool& vsync) : ww(ww), wh(wh), fw(fw), fh(fh), full(fullscreen), vsync(vsync)
 	{
 
 	}
@@ -22,7 +22,7 @@ namespace me::core
 		full = false;
 		vsync = false;
 	}
-	const bool AppInfo::loadFromFile(const std::string& file)
+	bool AppInfo::loadFromFile(const std::string& file)
 	{
 		std::string buf;
 		std::ifstream in;
@@ -142,7 +142,7 @@ namespace me::core
 	{
 		return glm::uvec2(full ? fw : ww, full ? fh : wh);
 	}
-	const bool AppInfo::isNumber(const std::string& str)
+	bool AppInfo::isNumber(const std::string& str)
 	{
 		return !str.empty() && std::find_if(str.begin(), str.end(), [](char c) {return !std::isdigit(c); }) == str.end();
 	}
@@ -154,10 +154,10 @@ namespace me::core
 	App::~App()
 	{
 		g_AppInstance = 0;
-		m_Scenes.clear();
+		//m_Scenes.clear();
 	}
 
-	const bool App::create()
+	bool App::create()
 	{
 		m_AppInfo.loadFromFile("Melancholy.ini");
 
@@ -197,10 +197,7 @@ namespace me::core
 		glClearColor(0.5, 0.5, 0.5, 1.0);
 
 		glfwSwapInterval(1);
-		glfwSetKeyCallback(m_GlfwWindow, [](GLFWwindow* window, int key, int scancode, int action, int mode)
-		{
-			
-		});
+
 		glfwSetCursorPosCallback(m_GlfwWindow, [](GLFWwindow* window, double x, double y)
 		{
 
@@ -215,7 +212,7 @@ namespace me::core
 
 		return true;
 	}
-	const bool App::run()
+	bool App::run()
 	{
 		glm::float64 currentTime = glfwGetTime();
 		glm::float64 previousTime = currentTime;
@@ -233,20 +230,20 @@ namespace me::core
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			getScene(m_CurrentScene)->draw(delta);
-
+		
 			glfwSwapBuffers(m_GlfwWindow);
 		}
 
 		return true;
 	}
-	const bool App::addScene(const Scene* scene, const std::string& call)
+	bool App::addScene(const Scene* scene, const std::string& call)
 	{
 		if (m_Scenes.find(call) == m_Scenes.end())
 			m_Scenes.insert(std::pair<std::string, Scene*>(call, const_cast<Scene*>(scene)));
 
 		return true;
 	}
-	const bool App::setScene(const std::string& call)
+	bool App::setScene(const std::string& call)
 	{
 		m_CurrentScene = call;
 	}

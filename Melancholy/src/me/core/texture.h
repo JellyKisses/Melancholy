@@ -16,10 +16,10 @@ namespace me::core
 		Texture();
 		~Texture();
 
-		const bool create(const glm::uint32& width, const glm::uint32& height);
-		const bool create(const glm::uvec2& size);
-		const bool loadFromFile(const std::string& file);
-		const bool loadFromImage(const Image& image);
+		bool create(const glm::uint32& width, const glm::uint32& height);
+		bool create(const glm::uvec2& size);
+		bool loadFromFile(const std::string& file);
+		bool loadFromImage(const Image& image);
 		const glm::uvec2& getSize();
 		Image copyToImage();
 		void update(const glm::uint8* pixels, const glm::uvec2& size, const glm::uvec2& position);
@@ -31,14 +31,14 @@ namespace me::core
 		void update(const Image& image, glm::uvec2& position);
 		void update(const Image& image, const glm::uint32& x, const glm::uint32& y);
 		void update(const Image& image);
-		void setSmooth(const bool& smooth);
-		const bool isSmooth();
-		void setSRGB(const bool& srgb);
-		const bool isSRGB();
-		void setRepeated(const bool& repeated);
-		const bool isRepeated();
-		void setMipmaps(const bool& mipmap);
-		const bool hasMipmaps();
+		void setSmooth(bool& smooth);
+		bool isSmooth();
+		void setSRGB(bool& srgb);
+		bool isSRGB();
+		void setRepeated(bool& repeated);
+		bool isRepeated();
+		void setMipmaps(bool& mipmap);
+		bool hasMipmaps();
 		void swap(Texture& texture);
 		const glm::uint32 getID();
 		static glm::uint32 getMaximumSize();

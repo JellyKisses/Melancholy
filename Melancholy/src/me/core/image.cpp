@@ -68,7 +68,7 @@ namespace me::core
 		}
 	}
 
-	const bool Image::loadFromFile(const std::string& file)
+	bool Image::loadFromFile(const std::string& file)
 	{
 		m_Pixels.clear();
 
@@ -101,7 +101,7 @@ namespace me::core
 			return false;
 		}
 	}
-	const bool Image::saveToFile(const std::string& file)
+	bool Image::saveToFile(const std::string& file)
 	{
 		if (!m_Pixels.empty() && (m_Size.x > 0) && (m_Size.y > 0))
 		{

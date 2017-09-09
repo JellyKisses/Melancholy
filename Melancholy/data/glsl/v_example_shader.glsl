@@ -14,10 +14,9 @@ flat out vec3 IN_Color;
 
 void main()
 { 
-	IN_Position = vec3(model * vec4(vpIn, 1.0));
+	IN_Position = vpIn;
 	IN_TexCoord = texCoordIn;
-	IN_Normal = mat3(model) * normalIn;
-	IN_Color = vec3(texCoordIn.x, 1.0, texCoordIn.y);
+	IN_Normal = normalIn;
 	
 	gl_Position = projection * view * vec4(vpIn, 1.0);
-}
+}	

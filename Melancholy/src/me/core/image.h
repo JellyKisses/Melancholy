@@ -16,8 +16,8 @@ namespace me::core
 		void create(const glm::uint32& width, const glm::uint32& height, const glm::uint8& r, const glm::uint8& g, const glm::uint8& b, const glm::uint8& a = 255);
 		void create(const glm::uint32& width, const glm::uint32& height, const glm::uint8* pixels);
 
-		const bool loadFromFile(const std::string& file);
-		const bool saveToFile(const std::string& file);
+		bool loadFromFile(const std::string& file);
+		bool saveToFile(const std::string& file);
 
 		const glm::uvec2 getSize();
 

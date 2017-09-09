@@ -6,4 +6,4 @@
 #include "core/scene.h"
 #include "core/shader.h"
 
-#include "gfx/terrain.h"
+#include "gfx/world.h"

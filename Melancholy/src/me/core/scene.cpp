@@ -2,8 +2,8 @@
 #include "app.h"
 #include "camera.h"
 #include "shader.h"
-#include "../gfx/terrain.h"
-
+#include "texture.h"
+#include "../gfx/world.h"
 
 namespace me::core
 {
@@ -17,14 +17,15 @@ namespace me::core
 	}
 
 
-	const bool Scene::load()
+	bool Scene::load()
 	{
 
 		if (!m_Loaded)
 		{	
-			m_Terrain = new gfx::Terrain();
-			
-			m_Camera = new Camera3D(0.f, 5.0f, 0.f, 0.f, 1.f, 0.f, 0.f, -45.f);
+			m_World = new gfx::World();
+			m_World->initialize();
+
+			m_Camera = new Camera3D(0.f, 5.0f, 0.f, 0.f, 1.f, 0.f, 270.f, -45.f);
 
 			addShader(new Shader(), "example_shader");
 			getShader("example_shader")->loadFromFile("data/glsl/v_example_shader.glsl", Shader::Type::Vertex);
@@ -38,7 +39,7 @@ namespace me::core
 
 		return true;
 	}
-	const bool Scene::isLoaded()
+	bool Scene::isLoaded()
 	{
 		return m_Loaded;
 	}
@@ -112,23 +113,19 @@ namespace me::core
 		m_Delta = delta;
 
 		getShader("example_shader")->bind();
-		//getShader("example_shader")->addUniformF("model", glm::mat4());
 		getShader("example_shader")->addUniformF("view", glm::lookAt(m_Camera->getPosition(), m_Camera->getPosition() + m_Camera->getFront(), m_Camera->getUp()));
-		getShader("example_shader")->addUniformF("projection", glm::perspective(glm::radians(70.f), static_cast<glm::float32_t>(g_AppInstance->m_AppInfo.getResolution().x) / static_cast<glm::float32_t>(g_AppInstance->m_AppInfo.getResolution().y), 0.1f, 1024.f));
-		getShader("example_shader")->addUniformU("tex", test_Texture->getID());
+		getShader("example_shader")->addUniformF("projection", glm::perspective(glm::radians(40.f), static_cast<glm::float32_t>(g_AppInstance->m_AppInfo.getResolution().x) / static_cast<glm::float32_t>(g_AppInstance->m_AppInfo.getResolution().y), 0.1f, 1024.f));
+		getShader("example_shader")->addUniformF("C_position", m_Camera->getPosition());
+		getShader("example_shader")->addUniformI("tex", test_Texture->getID());
+	
 
 		if (glfwGetKey(g_AppInstance->m_GlfwWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		{
 			exit(0);
 		}
 
-		glm::float32 height = 0.f;
-		m_Terrain->getHeight(m_Camera->getPosition().x, m_Camera->getPosition().z, height);
-
-		m_Camera->m_Position.y = 10.f;
 		m_Camera->update(delta);
-		m_Terrain->draw(delta);
-		//test_Text->draw();
+		m_World->draw(delta);
 	}
 
 }

@@ -131,7 +131,7 @@ namespace me::gfx
 		{
 
 		}
-		const bool Font::loadFromFile(const std::string& file)
+		bool Font::loadFromFile(const std::string& file)
 		{
 			static FT_Library library;
 			static FT_Face face;

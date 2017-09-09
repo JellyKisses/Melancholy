@@ -12,7 +12,7 @@ namespace me::core
 		glDeleteProgram(m_Program);
 	}
 
-	const bool Shader::loadFromFile(std::string file, Type type)
+	bool Shader::loadFromFile(std::string file, Type type)
 	{
 		switch (type)
 		{
@@ -29,7 +29,7 @@ namespace me::core
 		return true;
 
 	}
-	const bool Shader::loadFromMemory(std::string code, Type type)
+	bool Shader::loadFromMemory(std::string code, Type type)
 	{
 		switch (type)
 		{
@@ -148,7 +148,7 @@ namespace me::core
 
 		return buffer.str();
 	}
-	const bool Shader::create()
+	bool Shader::create()
 	{
 		m_Program = 0;
 		m_Vertex = 0;

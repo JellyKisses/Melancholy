@@ -1,12 +1,10 @@
 #pragma once
 
 #include "../util/util.h"
-#include "../gfx/terrain.h"
-#include "../gfx/text.h"
 
 
-namespace me::core { class Shader; class Camera3D; }
-namespace me::gfx { class Terrain; }
+namespace me::core { class Shader; class Camera3D; class Texture; }
+namespace me::gfx { class World; }
 namespace me::core
 {
 	class Scene
@@ -56,7 +54,7 @@ namespace me::core
 
 	private:
 		std::map<std::string, Shader*> m_Shaders;
-		gfx::Terrain* m_Terrain;
+		gfx::World* m_World;
 		Texture* test_Texture;
 		glm::float64 m_Delta;
 		Camera3D* m_Camera;
@@ -86,8 +84,8 @@ namespace me::core
 		Scene();
 		~Scene();
 
-		const bool load();
-		const bool isLoaded();
+		bool load();
+		bool isLoaded();
 
 		void setCallback(Callbacks type, Callback&& func);
 		void exeCallback(Callbacks type);

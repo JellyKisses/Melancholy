@@ -109,6 +109,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalOptions>/std:c++latest %(AdditionalOptions)</AdditionalOptions>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -129,8 +130,8 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\me\core\texture.cpp" />
     <ClCompile Include="src\me\core\transformable.cpp" />
-    <ClCompile Include="src\me\gfx\terrain.cpp" />
     <ClCompile Include="src\me\gfx\text.cpp" />
+    <ClCompile Include="src\me\gfx\world.cpp" />
     <ClCompile Include="src\me\util\util.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -139,8 +140,8 @@
     <ClInclude Include="src\me\core\image.h" />
     <ClInclude Include="src\me\core\texture.h" />
     <ClInclude Include="src\me\core\transformable.h" />
-    <ClInclude Include="src\me\gfx\terrain.h" />
     <ClInclude Include="src\me\gfx\text.h" />
+    <ClInclude Include="src\me\gfx\world.h" />
     <ClInclude Include="src\me\me.h" />
     <ClInclude Include="src\me\core\scene.h" />
     <ClInclude Include="src\me\core\shader.h" />
