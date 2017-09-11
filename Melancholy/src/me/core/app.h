@@ -10,16 +10,26 @@ namespace me::core
 	class AppInfo
 	{
 	public:
+		enum class AntiAliasing
+		{
+			None,
+			FXAA,
+			MSAAx2,
+			MSAAx4
+		};
+
+	public:
 		glm::uint32 ww;
 		glm::uint32 wh;
 		glm::uint32 fw;
 		glm::uint32 fh;
 		bool	 full;
 		bool	 vsync;
+		AntiAliasing aa;
 
 	public:
 		AppInfo();
-		AppInfo(const glm::uint32& ww, const glm::uint32& wh, const glm::uint32& fw, const glm::uint32& fh, bool& fullscreen, bool& vsync);
+		AppInfo(glm::uint32 ww, glm::uint32 wh, glm::uint32 fw, glm::uint32 fh, bool fullscreen, bool vsync, AntiAliasing aa);
 		~AppInfo();
 
 		bool loadFromFile(const std::string& file);
@@ -47,6 +57,11 @@ namespace me::core
 		AppInfo		m_AppInfo;
 		std::map<std::string, Scene*> m_Scenes;
 		std::string m_CurrentScene;
+		GLuint		m_FBO;
+		GLuint		m_FBO_col;
+		GLuint		m_FBO_dep;
+		GLuint		m_Post_VAO, m_Post_VBO;
+		Shader		m_Post_Shader;
 
 	};
 

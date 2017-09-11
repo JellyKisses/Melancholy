@@ -10,7 +10,17 @@ namespace me::core
 	class Texture
 	{
 	public:
-		static std::map<std::string, std::string> TextureMap;
+		enum class Textures
+		{
+			Grass01,
+			Grass02,
+			Grass03,
+			Grass04,
+			Tile01_s01,
+			Tile01_s02,
+			Tile01_s03
+		};
+		static std::map<Textures, std::string> TextureMap;
 
 	public:
 		Texture();
@@ -31,13 +41,13 @@ namespace me::core
 		void update(const Image& image, glm::uvec2& position);
 		void update(const Image& image, const glm::uint32& x, const glm::uint32& y);
 		void update(const Image& image);
-		void setSmooth(bool& smooth);
+		void setSmooth(bool smooth);
 		bool isSmooth();
-		void setSRGB(bool& srgb);
+		void setSRGB(bool srgb);
 		bool isSRGB();
-		void setRepeated(bool& repeated);
+		void setRepeated(bool repeated);
 		bool isRepeated();
-		void setMipmaps(bool& mipmap);
+		void setMipmaps(bool mipmap);
 		bool hasMipmaps();
 		void swap(Texture& texture);
 		const glm::uint32 getID();

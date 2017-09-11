@@ -32,7 +32,11 @@ namespace me::core
 			getShader("example_shader")->loadFromFile("data/glsl/f_example_shader.glsl", Shader::Type::Fragment);
 
 			test_Texture = new Texture();
-			test_Texture->loadFromFile(core::Texture::TextureMap["Grass01"]);
+			test_Texture->loadFromFile(core::Texture::TextureMap[core::Texture::Textures::Tile01_s01]);
+			test_Texture->setMipmaps(true);
+			test_Texture->setSmooth(false);
+			test_Texture->setRepeated(true);
+			test_Texture->setSRGB(false);
 
 			m_Loaded = true;
 		}

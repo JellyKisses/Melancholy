@@ -5,9 +5,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 {
 	try
 	{
-		me::core::App app;
-		app.create();
-		app.run();
+		me::core::App* app = new me::core::App();
+		app->create();
+		app->run();
+		
+		if (app) delete app;
 	}
 	catch (me::util::RuntimeError e)
 	{

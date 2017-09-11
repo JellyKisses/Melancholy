@@ -3,7 +3,7 @@
 
 namespace me::core
 {
-	std::map<std::string, std::string> Texture::TextureMap;
+	std::map<Texture::Textures, std::string> Texture::TextureMap;
 
 	Texture::Texture()
 		:
@@ -16,11 +16,15 @@ namespace me::core
 		m_FboAttached(false),
 		m_MipMap(false)
 	{
-		const std::string dir = "data/tex/";
-		TextureMap.insert(std::make_pair("Grass01", dir + "0_01.png"));
-		TextureMap.insert(std::make_pair("Grass02", dir + "0_02.png"));
-		TextureMap.insert(std::make_pair("Grass03", dir + "0_03.png"));
-		TextureMap.insert(std::make_pair("Grass04", dir + "0_04.png"));
+		const static std::string dir = "data/tex/";
+		const static std::string nul = "0.png";
+		TextureMap[Textures::Grass01] = dir + "0_01.png";
+		TextureMap[Textures::Grass02] = dir + nul;
+		TextureMap[Textures::Grass03] = dir + nul;
+		TextureMap[Textures::Grass04] = dir + nul;
+		TextureMap[Textures::Tile01_s01] = dir + "1_01_01.png";
+		TextureMap[Textures::Tile01_s02] = dir + nul;
+		TextureMap[Textures::Tile01_s03] = dir + nul;
 	}
 	Texture::~Texture()
 	{
@@ -195,7 +199,7 @@ namespace me::core
 	{
 		update(image, glm::uvec2(0, 0));
 	}
-	void Texture::setSmooth(bool& smooth)
+	void Texture::setSmooth(bool smooth)
 	{
 		if (m_Smooth != smooth)
 		{
@@ -220,7 +224,7 @@ namespace me::core
 	{
 		return m_Smooth;
 	}
-	void Texture::setSRGB(bool& srgb)
+	void Texture::setSRGB(bool srgb)
 	{
 		m_SRGB = srgb;
 	}
@@ -228,7 +232,7 @@ namespace me::core
 	{
 		return m_SRGB;
 	}
-	void Texture::setRepeated(bool& repeated)
+	void Texture::setRepeated(bool repeated)
 	{
 		if (m_Repeated != repeated)
 		{
@@ -247,7 +251,7 @@ namespace me::core
 	{
 		return m_Repeated;
 	}
-	void Texture::setMipmaps(bool& mipmap)
+	void Texture::setMipmaps(bool mipmap)
 	{
 		if (m_Texture)
 		{
@@ -287,7 +291,7 @@ namespace me::core
 	}
 	const glm::uint32 Texture::getID()
 	{
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE0 + m_Texture);
 		glBindTexture(GL_TEXTURE_2D, m_Texture);
 		return m_Texture;
 	}

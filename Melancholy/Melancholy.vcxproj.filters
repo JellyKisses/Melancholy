@@ -88,7 +88,7 @@
     <None Include="data\glsl\v_example_shader.glsl" />
     <None Include="data\glsl\f_example_shader.glsl" />
     <None Include="Melancholy.ini" />
-    <None Include="data\glsl\f_text_shader.glsl" />
-    <None Include="data\glsl\v_text_shader.glsl" />
+    <None Include="data\glsl\v_post_shader.glsl" />
+    <None Include="data\glsl\f_post_shader.glsl" />
   </ItemGroup>
 </Project>

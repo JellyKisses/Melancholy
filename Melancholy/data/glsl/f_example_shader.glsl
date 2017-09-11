@@ -2,10 +2,10 @@
 
 out vec4 FragColor;
 
-flat in vec3 IN_Position;
-flat in vec3 IN_Normal;
-flat in vec2 IN_TexCoord;
-flat in vec3 IN_Color;
+in vec3 IN_Position;
+in vec3 IN_Normal;
+in vec2 IN_TexCoord;
+in vec3 IN_Color;
 
 
 //CAMERA

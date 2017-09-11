@@ -71,6 +71,68 @@ namespace me::util
 
 	}
 
+	VertexArray::VertexArray()
+	{
+	}
+	VertexArray::~VertexArray()
+	{
+		glDeleteBuffers(1, &m_VBO);
+	}
+	glm::size_t VertexArray::getSize()
+	{
+		return m_Vertices.size();
+	}
+	GLuint VertexArray::getVbo(bool bind)
+	{
+		if (bind)
+			glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+		return m_VBO;
+	}
+	const Vertex& VertexArray::const_at(glm::size_t position) const
+	{
+		if (position > m_Vertices.size()) return Vertex();
+		return m_Vertices.at(position);
+	}
+	Vertex& VertexArray::at(glm::size_t position)
+	{
+		if (position > m_Vertices.size()) return Vertex();
+
+		m_Loaded = false;
+		return m_Vertices.at(position);
+	}
+	std::vector<Vertex>& VertexArray::getVertices()
+	{
+		m_Loaded = false;
+		return m_Vertices;
+	}
+	bool VertexArray::isLoaded()
+	{
+		return m_Loaded;
+	}
+	bool VertexArray::initialize()
+	{
+		if(!m_VBO) glGenBuffers(1, &m_VBO);
+		
+		if (!m_Loaded && !m_Vertices.empty())
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(util::Vertex) * m_Vertices.size(), &m_Vertices[0], GL_STATIC_DRAW);
+			m_Loaded = true;
+		}
+
+		return true;
+	}
+	bool VertexArray::draw()
+	{
+		if (m_Vertices.empty())	return true;
+		if (!m_Loaded) initialize();
+
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+		glDrawArrays(GL_TRIANGLES, 0, m_Vertices.size());
+
+		return true;
+	}
+
 	RuntimeError::RuntimeError(const ErrorType type, const std::string& msg, const std::string& because) :
 		m_ErrorTitles({ "Oh S***!", "Not Again...", "I was so close!", "Please don't worry.", "I'll be back soon",":(", "D:", "f***" }),
 		m_ErrorType(type),
@@ -112,27 +174,27 @@ namespace me::util
 		case ErrorType::Read:
 			if (!m_Message.empty() && m_Because.empty()) error_msg += "Read '" + m_Message + "'!";
 			else if (!m_Message.empty() && !m_Because.empty()) error_msg += "Read '" + m_Message + "' because '" + m_Because + "'!";
-			else error_msg += "Read!";
+			else error_msg += "Read Something!";
 			break;
 		case ErrorType::Create:
 			if (!m_Message.empty() && m_Because.empty()) error_msg += "Create '" + m_Message + "'!";
 			else if (!m_Message.empty() && !m_Because.empty()) error_msg += "Create '" + m_Message + "' because '" + m_Because + "'!";
-			else error_msg += "Create!";
+			else error_msg += "Create Something!";
 			break;
 		case ErrorType::Initialize:
 			if (!m_Message.empty() && m_Because.empty()) error_msg += "Initialize '" + m_Message + "'!";
 			else if (!m_Message.empty() && !m_Because.empty()) error_msg += "Initialize '" + m_Message + "' because '" + m_Because + "'!";
-			else error_msg += "Initialize!";
+			else error_msg += "Initialize Something!";
 			break;
 		case ErrorType::Find:
 			if (!m_Message.empty() && m_Because.empty()) error_msg += "Find '" + m_Message + "'!";
 			else if (!m_Message.empty() && !m_Because.empty()) error_msg += "Find '" + m_Message + "' because '" + m_Because + "'!";
-			else error_msg += "Find!";
+			else error_msg += "Find Something!";
 			break;
 		case ErrorType::Set:
 			if (!m_Message.empty() && m_Because.empty()) error_msg += "Set '" + m_Message + "'!";
 			else if (!m_Message.empty() && !m_Because.empty()) error_msg += "Set '" + m_Message + "' because '" + m_Because + "'!";
-			else error_msg += "Set!";
+			else error_msg += "Set Something!";
 			break;
 		case ErrorType::Other:
 		default:

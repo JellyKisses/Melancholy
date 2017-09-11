@@ -75,6 +75,30 @@ namespace me::util
 		glm::vec2 m_TexCoord;
 		glm::vec3 m_Normal;
 	};
+	class VertexArray
+	{
+	private:
+		GLuint m_VBO;
+		std::vector<Vertex> m_Vertices;
+		bool m_Loaded;
+
+	public:
+		VertexArray();
+		~VertexArray();
+
+		glm::size_t getSize();
+		GLuint getVbo(bool bind = true);
+		// Use if you do NOT wish to change the Vertices (faster)
+		const Vertex& const_at(glm::size_t position) const;
+		// Use if you DO wish to change the Vertices (slower)
+		Vertex&				at(glm::size_t position);
+		// Use if you DO wish to change the Vertices (slower)
+		std::vector<Vertex>& getVertices();
+		bool isLoaded();
+		bool initialize();
+
+		bool draw();
+	};
 
 	class RuntimeError
 	{

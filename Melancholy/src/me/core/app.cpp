@@ -9,7 +9,7 @@ namespace me::core
 	{
 
 	}
-	AppInfo::AppInfo(const glm::uint32& ww, const glm::uint32& wh, const glm::uint32& fw, const glm::uint32& fh, bool& fullscreen, bool& vsync) : ww(ww), wh(wh), fw(fw), fh(fh), full(fullscreen), vsync(vsync)
+	AppInfo::AppInfo(glm::uint32 ww, glm::uint32 wh, glm::uint32 fw, glm::uint32 fh, bool fullscreen, bool vsync, AntiAliasing aa) : ww(ww), wh(wh), fw(fw), fh(fh), full(fullscreen), vsync(vsync), aa(aa)
 	{
 
 	}
@@ -121,6 +121,31 @@ namespace me::core
 						return false;
 					}
 				}
+				else if (buf == "aa=")
+				{
+					in >> buf;
+					if (buf == "None" || buf == "none")
+					{
+						aa = AntiAliasing::None;
+					}
+					else if (buf == "fxaa" || buf == "FXAA")
+					{
+						aa = AntiAliasing::FXAA;
+					}
+					else if (buf == "msaax2" || buf == "msaaX2" || buf == "MSAAx2")
+					{
+						aa = AntiAliasing::MSAAx2;
+					}
+					else if (buf == "msaax4" || buf == "msaaX4" || buf == "MSAAx4")
+					{
+						aa = AntiAliasing::MSAAx4;
+					}
+					else
+					{
+						throw util::RuntimeError(util::RuntimeError::ErrorType::Read, file, buf + " is an invalid term");
+						return false;
+					}
+				}
 				else
 				{
 					/*Error?*/
@@ -154,6 +179,7 @@ namespace me::core
 	App::~App()
 	{
 		g_AppInstance = 0;
+		glDeleteVertexArrays(1, &m_Post_VAO);
 		//m_Scenes.clear();
 	}
 
@@ -198,6 +224,7 @@ namespace me::core
 
 		glfwSwapInterval(1);
 
+
 		glfwSetCursorPosCallback(m_GlfwWindow, [](GLFWwindow* window, double x, double y)
 		{
 
@@ -206,6 +233,50 @@ namespace me::core
 		{
 
 		});
+
+		glGenFramebuffers(1, &m_FBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
+
+		glGenTextures(1, &m_FBO_col);
+		glBindTexture(GL_TEXTURE_2D, m_FBO_col);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_AppInfo.getResolution().x, m_AppInfo.getResolution().y, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_FBO_col, 0);
+
+		glGenRenderbuffers(1, &m_FBO_dep);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_FBO_dep);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_AppInfo.getResolution().x, m_AppInfo.getResolution().y);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_FBO_dep);
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			throw util::RuntimeError(util::RuntimeError::ErrorType::Create, "Framebuffer");
+			return false;
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		const static glm::float32 _Post_Vertices[] = {
+			-1.f, 1.f, 0.f, 1.f,
+			-1.f, -1.f, 0.f, 0.f,
+			1.f, -1.f, 1.f, 0.f,
+			-1.f, 1.f, 0.f, 1.f,
+			1.f, -1.f, 1.f, 0.f,
+			1.f, 1.f, 1.f, 1.f
+		};
+
+		glGenVertexArrays(1, &m_Post_VAO);
+		glGenBuffers(1, &m_Post_VBO);
+		glBindVertexArray(m_Post_VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_Post_VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(_Post_Vertices), &_Post_Vertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::float32), (GLvoid*)(0 * sizeof(glm::float32)));
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::float32), (GLvoid*)(2 * sizeof(glm::float32)));
+
+		m_Post_Shader.loadFromFile("data/glsl/v_post_shader.glsl", Shader::Type::Vertex);
+		m_Post_Shader.loadFromFile("data/glsl/f_post_shader.glsl", Shader::Type::Fragment);
 
 		addScene(new Scene(), "example_scene");
 		setScene("example_scene");
@@ -228,9 +299,36 @@ namespace me::core
 
 			if (!getScene()->isLoaded()) getScene()->load();
 
+			glEnable(GL_DEPTH_TEST);
+			glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
+			glClearColor(0.f, 0.f, 0.f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			
 			getScene(m_CurrentScene)->draw(delta);
 		
+			glDisable(GL_DEPTH_TEST);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glClearColor(0.f, 0.f, 0.f, 1.f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			m_Post_Shader.bind();
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, m_FBO_col);
+			m_Post_Shader.addUniformI("tex", m_FBO_col);
+			m_Post_Shader.addUniformF("res", m_AppInfo.getResolution());
+			switch (m_AppInfo.aa)
+			{
+			default:
+			case AppInfo::AntiAliasing::None: m_Post_Shader.addUniformI("lvl", 0); break;
+			case AppInfo::AntiAliasing::FXAA: m_Post_Shader.addUniformI("lvl", 1); break;
+			case AppInfo::AntiAliasing::MSAAx2: m_Post_Shader.addUniformI("lvl", 2); break;
+			case AppInfo::AntiAliasing::MSAAx4: m_Post_Shader.addUniformI("lvl", 3); break;
+			}
+
+			glBindVertexArray(m_Post_VAO);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			
+
 			glfwSwapBuffers(m_GlfwWindow);
 		}
 

@@ -9,8 +9,8 @@ namespace me::gfx
 	{
 	private:
 		bool m_Loaded;
-		GLuint m_VBO_Floor;
-		GLuint m_VBO_Wall;
+		util::VertexArray m_Floor;
+		util::VertexArray m_Walls;
 		GLuint m_VAO;
 
 	public:
