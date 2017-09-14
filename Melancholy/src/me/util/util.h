@@ -33,10 +33,14 @@ static const std::string& FT_GetErrorString(FT_Error error)
 	return "Unknown";
 }
 
+#include <al/al.h>
+#include <al/alc.h>
+
 #include <SOIL2/SOIL2.h>
 
-#include <assimp/scene.h>
 #include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include <functional>
 #include <algorithm>
@@ -47,6 +51,7 @@ static const std::string& FT_GetErrorString(FT_Error error)
 #include <vector>
 #include <string>
 #include <chrono>
+#include <memory>
 #include <array>
 #include <map>
 
@@ -74,6 +79,8 @@ namespace me::util
 		glm::vec3 m_Position;
 		glm::vec2 m_TexCoord;
 		glm::vec3 m_Normal;
+		glm::vec3 m_Tangent;
+		glm::vec3 m_Bitangent;
 	};
 	class VertexArray
 	{
@@ -110,6 +117,7 @@ namespace me::util
 			Initialize,
 			Find,
 			Set,
+			Draw,
 			Other
 		};
 

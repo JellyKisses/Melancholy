@@ -53,11 +53,10 @@ namespace me::core
 		} m_Callbacks;
 
 	private:
-		std::map<std::string, Shader*> m_Shaders;
-		gfx::World* m_World;
-		Texture* test_Texture;
+		std::map<std::string, std::shared_ptr<Shader>> m_Shaders;
+		std::shared_ptr<gfx::World> m_World;
+		std::shared_ptr<Camera3D> m_Camera;
 		glm::float64 m_Delta;
-		Camera3D* m_Camera;
 		bool m_Loaded;
 
 	public:
@@ -90,8 +89,8 @@ namespace me::core
 		void setCallback(Callbacks type, Callback&& func);
 		void exeCallback(Callbacks type);
 
-		void addShader(Shader *shader, const std::string& call);
-		Shader* getShader(const std::string& call);
+		void addShader(const std::string& id, Shader shader);
+		std::shared_ptr<Shader> getShader(const std::string& id);
 
 		const glm::float64_t getDelta();
 

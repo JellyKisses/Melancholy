@@ -196,6 +196,11 @@ namespace me::util
 			else if (!m_Message.empty() && !m_Because.empty()) error_msg += "Set '" + m_Message + "' because '" + m_Because + "'!";
 			else error_msg += "Set Something!";
 			break;
+		case ErrorType::Draw:
+			if (!m_Message.empty() && m_Because.empty()) error_msg += "Draw '" + m_Message + "'!";
+			else if (!m_Message.empty() && !m_Because.empty()) error_msg += "Draw '" + m_Message + "' because '" + m_Because + "'!";
+			else error_msg += "Draw Something!";
+			break;
 		case ErrorType::Other:
 		default:
 			error_msg = "Melancholy has exited because of an unknown problem.";

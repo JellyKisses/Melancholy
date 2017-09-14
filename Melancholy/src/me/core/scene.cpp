@@ -14,6 +14,7 @@ namespace me::core
 	Scene::~Scene()
 	{
 		m_Shaders.clear();
+		g_Textures->clear();
 	}
 
 
@@ -22,21 +23,19 @@ namespace me::core
 
 		if (!m_Loaded)
 		{	
-			m_World = new gfx::World();
+			m_World = std::make_shared<gfx::World>();
 			m_World->initialize();
 
-			m_Camera = new Camera3D(0.f, 5.0f, 0.f, 0.f, 1.f, 0.f, 270.f, -45.f);
+			m_Camera = std::make_shared<Camera3D>(0.f, 5.0f, 0.f, 0.f, 1.f, 0.f, 270.f, -45.f);
 
-			addShader(new Shader(), "example_shader");
-			getShader("example_shader")->loadFromFile("data/glsl/v_example_shader.glsl", Shader::Type::Vertex);
-			getShader("example_shader")->loadFromFile("data/glsl/f_example_shader.glsl", Shader::Type::Fragment);
+			Texture tex;
 
-			test_Texture = new Texture();
-			test_Texture->loadFromFile(core::Texture::TextureMap[core::Texture::Textures::Tile01_s01]);
-			test_Texture->setMipmaps(true);
-			test_Texture->setSmooth(false);
-			test_Texture->setRepeated(true);
-			test_Texture->setSRGB(false);
+			if (!tex.loadFromFile("data/tex/0_01.png", false)) g_Textures->add("Grass01", tex);
+			if (!tex.loadFromFile("data/tex/1_01_01.png", false)) g_Textures->add("Tile01v01", tex);
+
+			addShader("world_shader", Shader());
+			getShader("world_shader")->loadFromFile("data/glsl/v_world_shader.glsl", Shader::Type::Vertex);
+			getShader("world_shader")->loadFromFile("data/glsl/f_world_shader.glsl", Shader::Type::Fragment);
 
 			m_Loaded = true;
 		}
@@ -93,20 +92,19 @@ namespace me::core
 		}
 	}
 
-	void Scene::addShader(Shader *shader, const std::string& call)
+	void Scene::addShader(const std::string& id, Shader shader)
 	{
-		if (m_Shaders.find(call) == m_Shaders.end())
-			m_Shaders.insert(std::pair<std::string, Shader*>(call, shader));
+		if (m_Shaders.find(id) == m_Shaders.end())
+			m_Shaders[id] = std::make_shared<Shader>(shader);
 	}
-	Shader* Scene::getShader(const std::string& call)
+	std::shared_ptr<Shader> Scene::getShader(const std::string& id)
 	{
-		if (m_Shaders.find(call) != m_Shaders.end())
-			return m_Shaders.at(call);
+		if (m_Shaders.find(id) != m_Shaders.end())
+			return m_Shaders.at(id);
 		else
-			throw util::RuntimeError(util::RuntimeError::ErrorType::Find, std::string("Shader: ") + call, "It Doesn't Exist");
+			throw util::RuntimeError(util::RuntimeError::ErrorType::Find, std::string("Shader: ") + id, "It Doesn't Exist");
 		return 0;
 	}
-
 	const glm::float64 Scene::getDelta()
 	{
 		return m_Delta;
@@ -116,12 +114,11 @@ namespace me::core
 	{
 		m_Delta = delta;
 
-		getShader("example_shader")->bind();
-		getShader("example_shader")->addUniformF("view", glm::lookAt(m_Camera->getPosition(), m_Camera->getPosition() + m_Camera->getFront(), m_Camera->getUp()));
-		getShader("example_shader")->addUniformF("projection", glm::perspective(glm::radians(40.f), static_cast<glm::float32_t>(g_AppInstance->m_AppInfo.getResolution().x) / static_cast<glm::float32_t>(g_AppInstance->m_AppInfo.getResolution().y), 0.1f, 1024.f));
-		getShader("example_shader")->addUniformF("C_position", m_Camera->getPosition());
-		getShader("example_shader")->addUniformI("tex", test_Texture->getID());
-	
+		getShader("world_shader")->bind();
+		getShader("world_shader")->addUniformF("u_projection", glm::perspective(glm::radians(40.f), static_cast<glm::float32_t>(g_AppInstance->m_AppInfo.getResolution().x) / static_cast<glm::float32_t>(g_AppInstance->m_AppInfo.getResolution().y), 0.1f, 1024.f));
+		getShader("world_shader")->addUniformF("u_view", glm::lookAt(m_Camera->getPosition(), m_Camera->getPosition() + m_Camera->getFront(), m_Camera->getUp()));
+		getShader("world_shader")->addUniformF("u_model", glm::mat4());
+		getShader("world_shader")->addUniformF("u_position", m_Camera->getPosition());
 
 		if (glfwGetKey(g_AppInstance->m_GlfwWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		{
@@ -131,5 +128,4 @@ namespace me::core
 		m_Camera->update(delta);
 		m_World->draw(delta);
 	}
-
 }

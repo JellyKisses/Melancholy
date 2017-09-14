@@ -5,11 +5,11 @@ namespace me::gfx
 {
 	World::World() : m_Loaded(false)
 	{
-		glGenVertexArrays(1, &m_VAO);
+
 	}
 	World::~World()
 	{
-		glDeleteVertexArrays(1, &m_VAO);
+		
 	}
 
 	bool World::draw(const glm::float64& delta)
@@ -19,9 +19,9 @@ namespace me::gfx
 			initialize();
 		}
 
-		glBindVertexArray(m_VAO);
-		m_Floor.draw();
-		//m_Walls.draw();
+		m_Mesh.draw(delta);
+		m_Floor.draw(delta);
+		m_Walls.draw(delta);
 		
 		return true;
 	}
@@ -29,26 +29,21 @@ namespace me::gfx
 	{
 		if (!m_Loaded)
 		{
-			glBindVertexArray(m_VAO);
-			m_Floor.getVertices() = {
-				{ { -3.f, 0.f, -3.f },{ 0.f, 0.f },{ 0.f, 1.f, 0.f } },
-				{ {  3.f, 0.f, -3.f },{ 1.f, 0.f },{ 0.f, 1.f, 0.f } },
-				{ {  3.f, 0.f,  3.f },{ 1.f, 1.f },{ 0.f, 1.f, 0.f } },
+			m_Walls.loadFromFile("data/obj/test.obj");
 
-				{ {  3.f, 0.f,  3.f },{ 1.f, 1.f },{ 0.f, 1.f, 0.f } },
-				{ { -3.f, 0.f,  3.f },{ 0.f, 1.f },{ 0.f, 1.f, 0.f } },
-				{ { -3.f, 0.f, -3.f },{ 0.f, 0.f },{ 0.f, 1.f, 0.f } }
-			};
-			m_Floor.initialize();
-			m_Walls.initialize();
+			m_Mesh.getVertices().push_back(util::Vertex(1.f, 1.f, 0.f, 1.f, 1.f, 0.f, 1.f, 0.f));
+			m_Mesh.getVertices().push_back(util::Vertex(1.f, -1.f, 0.f, 1.f, 0.f, 0.f, 1.f, 0.f));
+			m_Mesh.getVertices().push_back(util::Vertex(-1.f, -1.f, 0.f, 0.f, 0.f, 0.f, 1.f, 0.f));
+			m_Mesh.getVertices().push_back(util::Vertex(-1.f, 1.f, 0.f, 0.f, 1.f, 0.f, 1.f, 0.f));
 
-			glEnableVertexAttribArray(0);
-			glEnableVertexAttribArray(1);
-			glEnableVertexAttribArray(2);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(util::Vertex), (GLvoid*)(0 * sizeof(glm::float32)));
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(util::Vertex), (GLvoid*)(3 * sizeof(glm::float32)));
-			glVertexAttribPointer(2, 3, GL_FLOAT, GL_TRUE, sizeof(util::Vertex), (GLvoid*)(5 * sizeof(glm::float32)));
-
+			m_Mesh.getIndices().push_back(0);
+			m_Mesh.getIndices().push_back(1);
+			m_Mesh.getIndices().push_back(3);
+			m_Mesh.getIndices().push_back(1);
+			m_Mesh.getIndices().push_back(2);
+			m_Mesh.getIndices().push_back(3);
+			
+			
 
 			m_Loaded = true;
 		}

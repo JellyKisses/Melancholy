@@ -114,7 +114,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;freetype.lib;assimp-vc140-mt.lib;soil2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;openal32.lib;freetype.lib;assimp-vc140-mt.lib;soil2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
     <BuildLog>
@@ -123,8 +123,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\me\core\app.cpp" />
+    <ClCompile Include="src\me\core\audio.cpp" />
     <ClCompile Include="src\me\core\camera.cpp" />
     <ClCompile Include="src\me\core\image.cpp" />
+    <ClCompile Include="src\me\core\mesh.cpp" />
+    <ClCompile Include="src\me\core\model.cpp" />
     <ClCompile Include="src\me\core\scene.cpp" />
     <ClCompile Include="src\me\core\shader.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -136,8 +139,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\me\core\app.h" />
+    <ClInclude Include="src\me\core\audio.h" />
     <ClInclude Include="src\me\core\camera.h" />
     <ClInclude Include="src\me\core\image.h" />
+    <ClInclude Include="src\me\core\manager.h" />
+    <ClInclude Include="src\me\core\mesh.h" />
+    <ClInclude Include="src\me\core\model.h" />
     <ClInclude Include="src\me\core\texture.h" />
     <ClInclude Include="src\me\core\transformable.h" />
     <ClInclude Include="src\me\gfx\text.h" />
@@ -148,11 +155,16 @@
     <ClInclude Include="src\me\util\util.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\glsl\f_example_shader.glsl" />
+    <None Include="data\glsl\f_world_shader.glsl" />
     <None Include="data\glsl\f_post_shader.glsl" />
-    <None Include="data\glsl\v_example_shader.glsl" />
+    <None Include="data\glsl\v_world_shader.glsl" />
     <None Include="data\glsl\v_post_shader.glsl" />
     <None Include="Melancholy.ini" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="data\tex\0.png" />
+    <Image Include="data\tex\0_01.png" />
+    <Image Include="data\tex\1_01_01.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

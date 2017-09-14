@@ -3,12 +3,11 @@
 
 namespace me::core
 {
-	std::map<Texture::Textures, std::string> Texture::TextureMap;
-
 	Texture::Texture()
 		:
 		m_Size(0, 0),
 		m_Texture(0),
+		m_Type(Type::Diffuse),
 		m_Smooth(false),
 		m_SRGB(false),
 		m_Repeated(false),
@@ -16,15 +15,6 @@ namespace me::core
 		m_FboAttached(false),
 		m_MipMap(false)
 	{
-		const static std::string dir = "data/tex/";
-		const static std::string nul = "0.png";
-		TextureMap[Textures::Grass01] = dir + "0_01.png";
-		TextureMap[Textures::Grass02] = dir + nul;
-		TextureMap[Textures::Grass03] = dir + nul;
-		TextureMap[Textures::Grass04] = dir + nul;
-		TextureMap[Textures::Tile01_s01] = dir + "1_01_01.png";
-		TextureMap[Textures::Tile01_s02] = dir + nul;
-		TextureMap[Textures::Tile01_s03] = dir + nul;
 	}
 	Texture::~Texture()
 	{
@@ -34,7 +24,7 @@ namespace me::core
 		}
 	}
 
-	bool Texture::create(const glm::uvec2& size)
+	bool Texture::create(const glm::uvec2& size, bool unique)
 	{
 		const glm::uint32 maxSize = getMaximumSize();
 		if ((size.x == 0) || (size.y == 0) || (size.x > maxSize) || (size.y > maxSize))
@@ -69,7 +59,20 @@ namespace me::core
 		m_Flipped = false;
 		m_FboAttached = false;
 
-		if (!m_Texture) glGenTextures(1, &m_Texture);
+		if (unique)
+		{
+			if (!m_Texture)
+			{
+				m_Texture = 0;
+				glGenTextures(1, &m_Texture);
+			}
+		}
+		else
+		{
+			m_Texture = 0;
+			glGenTextures(1, &m_Texture);
+		}
+		
 		getID();
 		glTexImage2D(GL_TEXTURE_2D, 0, (m_SRGB ? GL_SRGB8_ALPHA8 : GL_RGBA), m_Size.x, m_Size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_Repeated ? GL_REPEAT : GL_CLAMP_TO_EDGE);
@@ -81,19 +84,20 @@ namespace me::core
 		m_MipMap = false;
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-	bool Texture::create(const glm::uint32& width, const glm::uint32& height)
+	bool Texture::create(const glm::uint32& width, const glm::uint32& height, bool unique)
 	{
-		return create(glm::uvec2(width, height));
+		return create(glm::uvec2(width, height), unique);
 	}
-	bool Texture::loadFromFile(const std::string& file)
+	bool Texture::loadFromFile(const std::string& file, bool unique, Type type)
 	{
 		Image image;
-		return image.loadFromFile(file) && loadFromImage(image);
+		return image.loadFromFile(file) && loadFromImage(image, unique, type);
 	}
-	bool Texture::loadFromImage(const Image& image)
+	bool Texture::loadFromImage(const Image& image, bool unique, Type type)
 	{
-		if (create(const_cast<Image&>(image).getSize()))
+		if (create(const_cast<Image&>(image).getSize(), unique))
 		{
+			m_Type = type;
 			update(image);
 		}
 		else
@@ -199,6 +203,14 @@ namespace me::core
 	{
 		update(image, glm::uvec2(0, 0));
 	}
+	void Texture::setType(Type type)
+	{
+		m_Type = type;
+	}
+	Texture::Type Texture::getType()
+	{
+		return m_Type;
+	}
 	void Texture::setSmooth(bool smooth)
 	{
 		if (m_Smooth != smooth)
@@ -289,11 +301,16 @@ namespace me::core
 		std::swap(m_FboAttached, texture.m_FboAttached);
 		std::swap(m_MipMap, texture.m_MipMap);
 	}
-	const glm::uint32 Texture::getID()
+	const glm::uint32 Texture::getID(int id)
 	{
-		glActiveTexture(GL_TEXTURE0 + m_Texture);
+		if (id > 0) glActiveTexture(GL_TEXTURE1 + id);
 		glBindTexture(GL_TEXTURE_2D, m_Texture);
 		return m_Texture;
+	}
+	const std::string& Texture::getFile()
+	{
+		if (m_File.empty()) return std::string();
+		return m_File;
 	}
 	glm::uint32 Texture::getMaximumSize()
 	{

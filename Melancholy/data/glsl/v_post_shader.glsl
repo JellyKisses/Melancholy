@@ -1,15 +1,14 @@
 #version 430
-in vec3 vpIn;
-in vec2 texCoordIn;
-in vec3 normalIn;
+in vec2 out_Position;
+in vec2 out_TexCoord;
 
-out vec2 IN_Position;
-out vec2 IN_TexCoord;
+out vec2 in_Position;
+out vec2 in_TexCoord;
 
 void main()
 { 
-	IN_Position = vec2(vpIn.xy);
-	IN_TexCoord = texCoordIn;
+	in_Position = out_Position;
+	in_TexCoord = out_TexCoord;
 	
-	gl_Position = vec4(vpIn, 1.0);
+	gl_Position = vec4(out_Position, 0.0, 1.0);
 }	

@@ -48,6 +48,15 @@
     <ClCompile Include="src\me\gfx\world.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\me\core\mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\me\core\audio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\me\core\model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\me\core\shader.h">
@@ -83,12 +92,35 @@
     <ClInclude Include="src\me\gfx\world.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\me\core\mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\me\core\audio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\me\core\model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\me\core\manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="data\glsl\v_example_shader.glsl" />
-    <None Include="data\glsl\f_example_shader.glsl" />
     <None Include="Melancholy.ini" />
     <None Include="data\glsl\v_post_shader.glsl" />
     <None Include="data\glsl\f_post_shader.glsl" />
+    <None Include="data\glsl\v_world_shader.glsl" />
+    <None Include="data\glsl\f_world_shader.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="data\tex\1_01_01.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\tex\0.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="data\tex\0_01.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -2,11 +2,13 @@
 
 #include "../util/util.h"
 #include "../gfx/text.h"
+#include "manager.h"
 #include "scene.h"
-
 
 namespace me::core
 {
+	class Texture;
+
 	class AppInfo
 	{
 	public:
@@ -66,4 +68,5 @@ namespace me::core
 	};
 
 	extern App* g_AppInstance;
+	extern Manager<Texture>* g_Textures;
 }

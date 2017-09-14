@@ -1,9 +1,11 @@
 #include "app.h"
+#include "texture.h"
 
 
 namespace me::core
 {
 	App* g_AppInstance = 0;
+	Manager<Texture>* g_Textures = 0;
 
 	AppInfo::AppInfo() : ww(800), wh(600), fw(800), fh(600), full(false), vsync(false)
 	{
@@ -175,12 +177,13 @@ namespace me::core
 	App::App()
 	{
 		g_AppInstance = this;
+		g_Textures = new Manager<Texture>();
 	}
 	App::~App()
 	{
 		g_AppInstance = 0;
 		glDeleteVertexArrays(1, &m_Post_VAO);
-		//m_Scenes.clear();
+		if(g_Textures) delete g_Textures;
 	}
 
 	bool App::create()
@@ -298,36 +301,28 @@ namespace me::core
 			glfwPollEvents();
 
 			if (!getScene()->isLoaded()) getScene()->load();
-
+			
 			glEnable(GL_DEPTH_TEST);
 			glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
-			glClearColor(0.f, 0.f, 0.f, 1.f);
+			glClearColor(0.f, 0.f, 1.f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
 			getScene(m_CurrentScene)->draw(delta);
-		
+
 			glDisable(GL_DEPTH_TEST);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glClearColor(0.f, 0.f, 0.f, 1.f);
+			glClearColor(0.f, 1.f, 0.f, 1.f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+			
 			m_Post_Shader.bind();
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, m_FBO_col);
-			m_Post_Shader.addUniformI("tex", m_FBO_col);
-			m_Post_Shader.addUniformF("res", m_AppInfo.getResolution());
-			switch (m_AppInfo.aa)
-			{
-			default:
-			case AppInfo::AntiAliasing::None: m_Post_Shader.addUniformI("lvl", 0); break;
-			case AppInfo::AntiAliasing::FXAA: m_Post_Shader.addUniformI("lvl", 1); break;
-			case AppInfo::AntiAliasing::MSAAx2: m_Post_Shader.addUniformI("lvl", 2); break;
-			case AppInfo::AntiAliasing::MSAAx4: m_Post_Shader.addUniformI("lvl", 3); break;
-			}
-
+			m_Post_Shader.addUniformI("u_tex", m_FBO_col);
+			m_Post_Shader.addUniformF("u_res", m_AppInfo.getResolution());
+			m_Post_Shader.addUniformI("u_lvl", static_cast<int>(m_AppInfo.aa));
+			
 			glBindVertexArray(m_Post_VAO);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
-			
 
 			glfwSwapBuffers(m_GlfwWindow);
 		}
